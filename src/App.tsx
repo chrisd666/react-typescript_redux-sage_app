@@ -1,18 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import Main from './components/Main';
 import User from './components/User';
+import { connect } from 'react-redux';
 
-function changeUsername(newName?: string) {}
+interface Props {
+  user: { name: string },
+  setName: (name: string) => {}
+}
 
-function App() {
+
+const mapStateToProps = (state: any) => {
+  return {
+    user: state.user,
+    math: state.math
+  }
+}
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setName: (name: any) =>{
+       dispatch({ type: 'SET_NAME', payload: name })
+    }
+  }
+}
+
+
+function App(props: Props) {
   return (
     <div className="App container">
-      <Main />
-      <User username="Chris" />
+      <Main changeUsername={() => props.setName('Kevin')} />
+      <User username={props.user.name} />
     </div>
   );
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App)
+

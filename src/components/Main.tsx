@@ -4,7 +4,7 @@ interface Props {
   changeUsername: (newName: string) => {};
 }
 
-export default function Main() {
+export default function Main(props: Props) {
   return (
     <div>
       <div className="row">
@@ -16,7 +16,7 @@ export default function Main() {
         <div className="col-xs-12">
           <button
             className="btn btn-primary"
-            // onClick={() => changeUsername('Anna')}
+            onClick={() => props.changeUsername('Anna')}
           >
             Change the Username
           </button>
