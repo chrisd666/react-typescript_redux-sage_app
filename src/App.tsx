@@ -1,38 +1,21 @@
 import React from 'react';
-import Main from './components/Main';
-import User from './components/User';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, decrement } from './actions';
 
-interface Props {
-  user: { name: string },
-  setName: (name: string) => {}
+interface State {
+  counter: number;
+  isLogged: boolean;
 }
 
+export default function App() {
+  const counter = useSelector((state: State) => state.counter);
+  const dispatch = useDispatch();
 
-const mapStateToProps = (state: any) => {
-  return {
-    user: state.user,
-    math: state.math
-  }
-}
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    setName: (name: any) =>{
-       dispatch({ type: 'SET_NAME', payload: name })
-    }
-  }
-}
-
-
-function App(props: Props) {
   return (
-    <div className="App container">
-      <Main changeUsername={() => props.setName('Kevin')} />
-      <User username={props.user.name} />
+    <div className="App">
+      <button onClick={() => dispatch(increment(5))}>+</button>
+      <button onClick={() => dispatch(decrement(7))}>-</button>
+      <h1>Counter: {counter}</h1>
     </div>
   );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
-

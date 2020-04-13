@@ -4,37 +4,34 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
-import 'bootstrap/dist/css'
+import { createStore, compose, applyMiddleware } from 'redux';
+import allReducer from './reducers';
+import createSagaMiddleware from 'redux-saga';
+import { increaseCounter, decreaseCounter } from './saga';
 
-const userReducer = (state = {
-  name: "Chris", age: 27
-}, action) => {
-  switch (action.type) {
-    case "SET_NAME";
-      state = {
-        ...state,
-        name: action.payload
-      };
-      break;
-
-    case "SET_AGE";
-      state = {
-        ...state,
-        age: action.payload
-      };
-      break;
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
   }
-
-  return state
 }
 
-const store = createStore(combineReducers({math: mathReducer, user: userReducer}))
+const sagaMiddleware = createSagaMiddleware();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+let store = createStore(
+  allReducer,
+  composeEnhancers(applyMiddleware(sagaMiddleware))
+);
+
+sagaMiddleware.run(increaseCounter);
+sagaMiddleware.run(decreaseCounter);
+
+store.subscribe(() => console.log(store.getState()));
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-    <App />
+      <App />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
